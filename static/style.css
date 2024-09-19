@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background-color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 20px auto;
+    overflow: hidden;
+    padding: 20px;
+    background-color: #2a2a2a;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+h1, h2 {
+    color: #ffffff;
+}
+
+.step {
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    margin-right: 10px;
+}
+
+input[type="number"], input[type="text"], input[type="file"] {
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    margin-right: 10px;
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+.small-button, .custom-file-upload {
+    padding: 10px 20px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    display: inline-block;
+}
+
+.small-button:hover, .custom-file-upload:hover {
+    background-color: #000;
+}
+
+.folder-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.folder-inputs input[type="text"] {
+    width: 150px;
+}
+
+.image-upload-containers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 4px;
+    width: 200px;
+    background-color: #333;
+}
+
+.image-upload-container label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.image-upload-container input[type="file"] {
+    display: none;
+}
+
+.file-names {
+    margin-top: 10px;
+    max-height: 100px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.image-preview {
+    margin-top: 10px;
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+#classifyImage {
+    display: none;
+}
