@@ -1,0 +1,4 @@
+This folder will contain multiple folders each having diffrent images that will help in model building.
+
+- The multiple folders will be created through web application based on user input.
+- For more information please refer to Github page of this repository.
