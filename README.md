@@ -13,7 +13,7 @@
 ## Video Demo
 🎥 Here you can find a video of the working project
 
-
+https://github.com/user-attachments/assets/ddc90b41-1b4a-48e8-b3be-26c4c4fcede1
 
 ## Deployment
 
@@ -45,4 +45,8 @@ Finally run the app.py file
 
 ## Project Outlook
 <br>
+
+![Screenshot 2024-09-19 221451](https://github.com/user-attachments/assets/0673e26b-268a-4ed8-946e-c9c4a8c81551)
+![Screenshot 2024-09-19 221618](https://github.com/user-attachments/assets/30390329-4f5a-45aa-a044-a4b0e8ef74aa)
+![Screenshot 2024-09-19 221652](https://github.com/user-attachments/assets/d62c0cb3-3f3b-4614-a764-30f57a69517a)
 
