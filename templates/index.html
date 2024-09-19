@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">Image Classifier</h1>
+        <h3 style="text-align: center;">A quick Pocket Model creater based on images</h3>
+        <br>
+        <div id="step1" class="step">
+            <h2>Step 1: Create Folders</h2>
+            <div class="input-group">
+                <label for="numFolders">Number of folders:</label>
+                <input type="number" id="numFolders" min="2" max="6" value="2">
+                <button onclick="createFolderInputs()" class="small-button">Set Folder Count</button>
+            </div>
+            <div id="folderInputs" class="folder-inputs"></div>
+            <button onclick="createFolders()" class="small-button">Create Folders</button>
+        </div>
+
+        <div id="step2" class="step">
+            <h2>Step 2: Upload Images</h2>
+            <div id="imageUploadContainers" class="image-upload-containers"></div>
+            <button onclick="uploadImages()" class="small-button">Upload Images</button>
+        </div>
+
+        <div id="step3" class="step">
+            <h2>Step 3: Train Model</h2>
+            <button onclick="trainModel()" class="small-button">Train Model</button>
+        </div>
+
+        <div id="step4" class="step">
+            <h2>Step 4: Classify Image</h2>
+            <div class="input-group">
+                <label class="custom-file-upload">
+                    <input type="file" id="classifyImage" accept="image/*" onchange="previewClassifyImage(this)">
+                    Choose File
+                </label>
+                <div id="classifyImagePreview" class="image-preview"></div>
+            </div>
+            <button onclick="classifyImage()" class="small-button">Classify Image</button>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
