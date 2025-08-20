@@ -1,0 +1,7 @@
+All the models would be saved here when your training completes, there will mainly be 5 files:
+
+class indices
+densenet_model.h5
+efficientnet_model.h5
+mobilenet_model.h5
+resnet_model.h5
