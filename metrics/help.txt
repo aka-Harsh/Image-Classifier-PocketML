@@ -1,0 +1,6 @@
+this folder will contain the classification report of all the models including 
+
+- confusion matrix
+- model progress
+- training history
+- metrics
