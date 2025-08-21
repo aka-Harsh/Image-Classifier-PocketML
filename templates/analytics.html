@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - Enhanced Image Classifier{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="text-center">
+                <h1 class="display-4 fw-bold text-primary mb-3">
+                    <i class="bi bi-graph-up me-3"></i>Training Analytics Dashboard
+                </h1>
+                <p class="lead text-muted">
+                    Comprehensive analysis of model training performance and metrics
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div id="quickStats" class="row g-3">
+                <div class="col-12 text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading analytics...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Comparison Charts -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header bg-transparent border-secondary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart me-2 text-primary"></i>Model Performance Comparison
+                        </h5>
+                        <button class="btn btn-outline-primary btn-sm" onclick="generateReport()">
+                            <i class="bi bi-file-earmark-bar-graph me-1"></i>Generate Report
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <img id="comparisonChart" class="img-fluid" style="max-height: 600px;" alt="Model Comparison Chart">
+                        <div id="comparisonChartLoading" class="text-muted">
+                            <div class="spinner-border text-primary me-2" role="status"></div>
+                            Loading comparison chart...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Individual Model Analytics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="text-muted mb-3">
+                <i class="bi bi-graph-down me-2"></i>Individual Model Training Curves
+            </h4>
+        </div>
+    </div>
+
+    <div id="individualCharts" class="row g-4">
+        <!-- Individual charts will be populated here -->
+    </div>
+
+    <!-- Download Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0">
+                        <i class="bi bi-download me-2 text-success"></i>Download Options
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <button class="btn btn-success w-100" onclick="downloadAllModels()">
+                                <i class="bi bi-collection me-2"></i>All Models
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-info w-100" onclick="downloadAllMetrics()">
+                                <i class="bi bi-file-earmark-bar-graph me-2"></i>All Metrics
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-warning w-100" onclick="downloadReport()">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>Training Report
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-secondary w-100" onclick="downloadCharts()">
+                                <i class="bi bi-images me-2"></i>All Charts
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}
