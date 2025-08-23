@@ -1,52 +1,334 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Classifier</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1 style="text-align: center;">Image Classifier</h1>
-        <h3 style="text-align: center;">A quick Pocket Model creater based on images</h3>
-        <br>
-        <div id="step1" class="step">
-            <h2>Step 1: Create Folders</h2>
-            <div class="input-group">
-                <label for="numFolders">Number of folders:</label>
-                <input type="number" id="numFolders" min="2" max="6" value="2">
-                <button onclick="createFolderInputs()" class="small-button">Set Folder Count</button>
+{% extends "base.html" %}
+
+{% block title %}Training Interface - Enhanced Image Classifier{% endblock %}
+
+{% block head %}
+<style>
+    .step-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .step-card:hover {
+        border-color: var(--bs-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 212, 170, 0.15);
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+    
+    .progress-animated {
+        animation: progress-animation 2s ease-in-out infinite;
+    }
+    
+    @keyframes progress-animation {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+    
+    .image-preview {
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.2s ease;
+    }
+    
+    .image-preview:hover {
+        transform: scale(1.1);
+    }
+    
+    .model-selection-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .model-selection-card.selected {
+        border-color: var(--bs-primary);
+        background-color: rgba(0, 212, 170, 0.1);
+    }
+    
+    .model-selection-card:hover {
+        border-color: var(--bs-primary);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="text-center">
+                <h1 class="display-4 fw-bold text-primary mb-3">
+                    <i class="bi bi-robot me-3"></i>Multi-Model AI Training Center
+                </h1>
+                <p class="lead text-muted">
+                    Train multiple deep learning models simultaneously and compare their performance
+                </p>
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="bi bi-cpu me-1"></i>MobileNetV2
+                    </span>
+                    <span class="badge bg-info fs-6 px-3 py-2">
+                        <i class="bi bi-layers me-1"></i>ResNet50
+                    </span>
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="bi bi-lightning me-1"></i>EfficientNetB0
+                    </span>
+                    <span class="badge bg-warning fs-6 px-3 py-2">
+                        <i class="bi bi-diagram-3 me-1"></i>DenseNet121
+                    </span>
+                </div>
             </div>
-            <div id="folderInputs" class="folder-inputs"></div>
-            <button onclick="createFolders()" class="small-button">Create Folders</button>
-        </div>
-
-        <div id="step2" class="step">
-            <h2>Step 2: Upload Images</h2>
-            <div id="imageUploadContainers" class="image-upload-containers"></div>
-            <button onclick="uploadImages()" class="small-button">Upload Images</button>
-        </div>
-
-        <div id="step3" class="step">
-            <h2>Step 3: Train Model</h2>
-            <button onclick="trainModel()" class="small-button">Train Model</button>
-        </div>
-
-        <div id="step4" class="step">
-            <h2>Step 4: Classify Image</h2>
-            <div class="input-group">
-                <label class="custom-file-upload">
-                    <input type="file" id="classifyImage" accept="image/*" onchange="previewClassifyImage(this)">
-                    Choose File
-                </label>
-                <div id="classifyImagePreview" class="image-preview"></div>
-            </div>
-            <button onclick="classifyImage()" class="small-button">Classify Image</button>
-            <div id="result"></div>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+    <!-- Dataset Info Panel -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-dark border-secondary">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5 class="card-title">
+                                <i class="bi bi-database me-2 text-info"></i>Dataset Status
+                            </h5>
+                            <div id="datasetInfo" class="text-muted">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                Loading dataset information...
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <button class="btn btn-outline-info" onclick="refreshDatasetInfo()">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Steps -->
+    <div class="row g-4">
+        <!-- Step 1: Create Class Folders -->
+        <div class="col-12">
+            <div class="card step-card bg-dark border-secondary">
+                <div class="card-header bg-transparent border-secondary">
+                    <div class="d-flex align-items-center">
+                        <div class="step-number bg-primary text-white me-3">1</div>
+                        <h5 class="mb-0">
+                            <i class="bi bi-folder-plus me-2"></i>Create Class Folders
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Define the number of classes and create folders for your training data.</p>
+                    
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-6">
+                            <label for="numFolders" class="form-label">Number of Classes:</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-collection"></i>
+                                </span>
+                                <input type="number" id="numFolders" class="form-control" min="2" max="10" value="2">
+                                <button class="btn btn-outline-primary" onclick="createFolderInputs()">
+                                    <i class="bi bi-gear me-1"></i>Setup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="folderInputsContainer" class="mb-3"></div>
+                    
+                    <button id="createFoldersBtn" class="btn btn-primary" onclick="createFolders()" disabled>
+                        <i class="bi bi-folder-check me-2"></i>Create Folders
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Upload Training Images -->
+        <div class="col-12">
+            <div class="card step-card bg-dark border-secondary">
+                <div class="card-header bg-transparent border-secondary">
+                    <div class="d-flex align-items-center">
+                        <div class="step-number bg-info text-white me-3">2</div>
+                        <h5 class="mb-0">
+                            <i class="bi bi-cloud-upload me-2"></i>Upload Training Images
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Upload images for each class. Recommended: 20+ images per class for better results.</p>
+                    
+                    <div id="imageUploadContainer" class="row g-3 mb-3">
+                        <div class="col-12 text-center text-muted">
+                            <i class="bi bi-images fs-1"></i>
+                            <p>Create class folders first to enable image uploads</p>
+                        </div>
+                    </div>
+                    
+                    <button id="uploadImagesBtn" class="btn btn-info" onclick="uploadImages()" disabled>
+                        <i class="bi bi-upload me-2"></i>Upload All Images
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Select Models & Start Training -->
+        <div class="col-12">
+            <div class="card step-card bg-dark border-secondary">
+                <div class="card-header bg-transparent border-secondary">
+                    <div class="d-flex align-items-center">
+                        <div class="step-number bg-success text-white me-3">3</div>
+                        <h5 class="mb-0">
+                            <i class="bi bi-cpu me-2"></i>Model Selection & Training
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">Select which models to train. You can choose one or multiple models.</p>
+                    
+                    <!-- Model Selection Grid -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="model-selection-card card bg-dark border-secondary h-100" data-model="mobilenet">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-phone text-primary fs-1 mb-2"></i>
+                                    <h6 class="card-title">MobileNetV2</h6>
+                                    <p class="card-text small text-muted">Lightweight & Fast</p>
+                                    <div class="small">
+                                        <div><strong>Params:</strong> ~3.4M</div>
+                                        <div><strong>Speed:</strong> Fast</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="model-selection-card card bg-dark border-secondary h-100" data-model="resnet">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-layers text-info fs-1 mb-2"></i>
+                                    <h6 class="card-title">ResNet50</h6>
+                                    <p class="card-text small text-muted">Deep Residual Network</p>
+                                    <div class="small">
+                                        <div><strong>Params:</strong> ~25.6M</div>
+                                        <div><strong>Speed:</strong> Medium</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="model-selection-card card bg-dark border-secondary h-100" data-model="efficientnet">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-lightning text-success fs-1 mb-2"></i>
+                                    <h6 class="card-title">EfficientNetB0</h6>
+                                    <p class="card-text small text-muted">Efficient Scaling</p>
+                                    <div class="small">
+                                        <div><strong>Params:</strong> ~5.3M</div>
+                                        <div><strong>Speed:</strong> Fast</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="model-selection-card card bg-dark border-secondary h-100" data-model="densenet">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-diagram-3 text-warning fs-1 mb-2"></i>
+                                    <h6 class="card-title">DenseNet121</h6>
+                                    <p class="card-text small text-muted">Dense Connectivity</p>
+                                    <div class="small">
+                                        <div><strong>Params:</strong> ~8.0M</div>
+                                        <div><strong>Speed:</strong> Medium</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-outline-primary me-2" onclick="selectAllModels()">
+                                <i class="bi bi-check-all me-1"></i>Select All
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearModelSelection()">
+                                <i class="bi bi-x-circle me-1"></i>Clear Selection
+                            </button>
+                        </div>
+                        
+                        <button id="startTrainingBtn" class="btn btn-success" onclick="startTraining()" disabled>
+                            <i class="bi bi-play-circle me-2"></i>Start Training
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Training Progress -->
+        <div class="col-12">
+            <div class="card step-card bg-dark border-secondary">
+                <div class="card-header bg-transparent border-secondary">
+                    <div class="d-flex align-items-center">
+                        <div class="step-number bg-warning text-dark me-3">4</div>
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up me-2"></i>Training Progress
+                        </h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="trainingProgressContainer">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-clock fs-1"></i>
+                            <p>Training progress will appear here once started</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Training Progress Modal -->
+<div class="modal fade" id="trainingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-gear-wide-connected me-2 text-primary"></i>
+                    Training in Progress
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div id="trainingModalContent">
+                    <!-- Training progress content will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" onclick="stopTraining()">
+                    <i class="bi bi-stop-circle me-1"></i>Stop Training
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}
